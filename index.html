@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WMS 库存查询</title>
+  <link rel="stylesheet" href="./tokens.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="erp-shell">
+    <aside class="sider">
+      <nav class="sider-menu" aria-label="主导航">
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">⌂</span><span>首页</span></button>
+        <button class="sider-item expanded" data-role="nav-item"><span class="nav-icon">▣</span><span>入库管理</span><span class="nav-caret">⌃</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">◉</span><span>入库单</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">➜</span><span>快捷上架</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">✓</span><span>收货任务</span></button>
+        <button class="sider-item active" data-role="nav-item"><span class="nav-icon">◌</span><span>入库任务</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">质</span><span>小包入库质检</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">▤</span><span>质检单</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">▦</span><span>贴标任务</span></button>
+        <button class="sider-item" data-role="nav-item"><span class="nav-icon">◆</span><span>入库贴标</span></button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="fake-select" data-select="warehouse">
+            <span data-select-label>请选择仓库</span>
+            <span class="select-arrow">⌄</span>
+            <div class="select-menu">
+              <button data-role="select-option" data-value="SZ01 东莞仓">SZ01 东莞仓</button>
+              <button data-role="select-option" data-value="SZ02 深圳仓">SZ02 深圳仓</button>
+              <button data-role="select-option" data-value="US01 美西仓">US01 美西仓</button>
+            </div>
+          </div>
+
+          <div class="fake-select" data-select="searchType">
+            <span data-select-label>精确搜索</span>
+            <span class="select-arrow">⌄</span>
+            <div class="select-menu">
+              <button data-role="select-option" data-value="SKU">SKU</button>
+              <button data-role="select-option" data-value="产品名称">产品名称</button>
+              <button data-role="select-option" data-value="客户编码">客户编码</button>
+              <button data-role="select-option" data-value="货位编码">货位编码</button>
+              <button data-role="select-option" data-value="单据号">单据号</button>
+            </div>
+          </div>
+
+          <div class="search-combo">
+            <input class="input" id="keywordInput" value="FAFC0062-001" placeholder="请输入" />
+            <button class="icon-btn search-expand" data-action="toggle-batch-search" title="批量输入">▦</button>
+            <div class="batch-popover" id="batchPopover">
+              <textarea id="batchTextarea" placeholder="按换行、英文逗号、中文逗号分隔"></textarea>
+              <div class="batch-footer">
+                <span id="batchCount">已识别 0 个条件</span>
+                <div>
+                  <button class="btn btn--sm" data-action="cancel-batch">取消</button>
+                  <button class="btn btn--sm btn--solid btn--color-primary" data-action="apply-batch">应用</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <input class="input" id="productName" placeholder="请输入产品名称" />
+
+          <div class="fake-select" data-select="customer">
+            <span data-select-label>请选择客户</span>
+            <span class="select-arrow">⌄</span>
+            <div class="select-menu">
+              <button data-role="select-option" data-value="YYHC00001">YYHC00001</button>
+              <button data-role="select-option" data-value="YYHC00002">YYHC00002</button>
+              <button data-role="select-option" data-value="全部客户">全部客户</button>
+            </div>
+          </div>
+
+          <input class="input" id="locationCode" placeholder="请输入库位编码" />
+
+          <div class="fake-select" data-select="salesStatus">
+            <span data-select-label>销售状态</span>
+            <span class="select-arrow">⌄</span>
+            <div class="select-menu">
+              <button data-role="select-option" data-value="平台下架">平台下架</button>
+              <button data-role="select-option" data-value="在线产品">在线产品</button>
+              <button data-role="select-option" data-value="全部状态">全部状态</button>
+            </div>
+          </div>
+
+          <button class="btn btn--solid btn--color-primary" data-action="search">搜索</button>
+          <button class="btn btn--solid btn--neutral" data-action="reset">重置</button>
+        </div>
+        <div class="active-chips" id="activeChips"></div>
+      </section>
+
+      <section class="content-panel">
+        <section class="tab-pane active" data-tab-pane="location">
+          <div class="table-toolbar">
+            <div class="toolbar-actions">
+              <button class="btn btn--sm btn--outlined btn--color-primary" data-action="mock-upload">批量导入</button>
+              <button class="btn btn--sm btn--outlined btn--color-success" data-action="export-current">批量导出</button>
+            </div>
+            <div class="toolbar-actions toolbar-actions--right">
+              <button class="btn btn--sm" data-action="open-field-help">字段说明</button>
+              <button class="floating-setting" data-action="toggle-columns" title="列设置">⚙</button>
+            </div>
+          </div>
+
+          <div class="batch-bar" id="locationBatchBar">
+            <span>已选 <strong data-bind="locationSelected">0</strong> 项</span>
+            <div>
+              <button class="btn btn--sm" data-action="export-selected">导出选中</button>
+              <button class="btn btn--sm btn--text" data-action="clear-selection">取消选择</button>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="data-table inventory-table">
+              <thead>
+                <tr>
+                  <th class="check-cell" rowspan="2"><input type="checkbox" data-action="select-all-location" /></th>
+                  <th rowspan="2">仓库</th>
+                  <th rowspan="2">SKU</th>
+                  <th rowspan="2">产品名称</th>
+                  <th rowspan="2">销售状态</th>
+                  <th class="num-cell" rowspan="2">总库存 <button class="help-dot" data-role="field-tip" data-tip="总库存 = 在库库存 + 在途库存">?</button></th>
+                  <th class="num-cell" rowspan="2">在途</th>
+                  <th class="num-cell" rowspan="2">储位库存 <button class="help-dot" data-role="field-tip" data-tip="记录在实体库位上的库存">?</button></th>
+                  <th class="num-cell" rowspan="2">预占用</th>
+                  <th class="num-cell" rowspan="2">占用库存</th>
+                  <th class="num-cell" rowspan="2">待上架库存</th>
+                  <th class="num-cell" rowspan="2">次品库存</th>
+                  <th class="group-head" colspan="4">库存明细</th>
+                </tr>
+                <tr>
+                  <th>库位编码</th>
+                  <th class="num-cell">总库存</th>
+                  <th class="num-cell">储位库存</th>
+                  <th class="num-cell">占用库存</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="check-cell"><input type="checkbox" data-row-check="location" /></td>
+                  <td>SZ01<br><span class="muted">SZ01东莞仓</span></td>
+                  <td><a class="link" data-action="open-sku" data-sku="FAFC0062-001">FAFC0062-001</a></td>
+                  <td>
+                    <div class="product-cell">
+                      <div class="product-thumb">IMG</div>
+                      <div>
+                        <div class="product-title">【低价引流款】1套[2件]ZK-302T DC9-24V蓝牙数字功放板</div>
+                        <span class="muted">属性：东莞仓</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="status-text">平台下架</span></td>
+                  <td class="num-cell"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">13</a></td>
+                  <td class="num-cell">0</td>
+                  <td class="num-cell"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">13</a></td>
+                  <td class="num-cell">14</td>
+                  <td class="num-cell"><a class="link occupied-value" data-action="open-occupied" data-sku="FAFC0062-001">3</a></td>
+                  <td class="num-cell"><a class="link strong-link" data-action="open-pending" data-sku="FAFC0062-001">2</a></td>
+                  <td class="num-cell">2</td>
+                  <td>
+                    <div class="location-detail-list">
+                      <div class="location-detail-row">
+                        <button class="link-button location-code" data-action="open-location-detail" data-sku="FAFC0062-001">4C20-A0326</button>
+                      </div>
+                      <div class="location-detail-row">
+                        <button class="link-button location-code" data-action="open-location-detail" data-sku="FAFC0062-001">4D20-A0111<span class="defect-badge">次</span></button>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="num-cell">
+                    <div class="location-detail-list">
+                      <div class="location-detail-row"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">11</a></div>
+                      <div class="location-detail-row"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">2</a></div>
+                    </div>
+                  </td>
+                  <td class="num-cell">
+                    <div class="location-detail-list">
+                      <div class="location-detail-row"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">11</a></div>
+                      <div class="location-detail-row"><a class="link" data-action="open-location-detail" data-sku="FAFC0062-001">2</a></div>
+                    </div>
+                  </td>
+                  <td class="num-cell">
+                    <div class="location-detail-list">
+                      <div class="location-detail-row"><a class="link occupied-value" data-action="open-occupied" data-sku="FAFC0062-001">3</a></div>
+                      <div class="location-detail-row"><a class="link occupied-value" data-action="open-occupied" data-sku="FAFC0062-001">0</a></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination">
+            <span>共 1 条</span>
+            <button data-role="pagination-prev" disabled>‹</button>
+            <button data-role="pagination-page" aria-current="page">1</button>
+            <button data-role="pagination-next" disabled>›</button>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-mask" data-action="close-drawer"></div>
+  <aside class="drawer" id="detailDrawer" role="dialog" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <div>
+        <h2 id="drawerTitle">详情</h2>
+        <div class="drawer-subtitle" id="drawerSubtitle">—</div>
+      </div>
+      <button class="icon-btn" data-action="close-drawer" title="关闭">×</button>
+    </div>
+    <div class="drawer-tabs" id="drawerTabs"></div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <footer class="drawer-foot">
+      <button class="btn" data-action="close-drawer">关闭</button>
+      <button class="btn btn--solid btn--color-primary" data-action="copy-drawer-id">复制编号</button>
+    </footer>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
