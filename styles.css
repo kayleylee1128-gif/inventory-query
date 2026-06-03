@@ -438,6 +438,16 @@
   font-weight: 600;
 }
 
+.lock-value {
+  color: #d46b08;
+  font-weight: 600;
+}
+
+.defect-value {
+  color: #cf1322;
+  font-weight: 600;
+}
+
 .link-button {
   border: 0;
   background: transparent;
