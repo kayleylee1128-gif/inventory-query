@@ -101,7 +101,7 @@ const drawerData = {
   },
   locked: {
     title: "锁定库存详情",
-    subtitle: "拣货缺货后临时锁定的库存",
+    subtitle: "暂不计算拣货缺货，拣货缺货仍归入占用库存",
     tabs: [
       { key: "list", label: "锁定单据" },
       { key: "rule", label: "锁定口径" },
@@ -114,18 +114,18 @@ const drawerData = {
             <tr><th>拣货单号</th><th>库位编码</th><th>锁定数量</th><th>锁定时间</th><th>锁定原因</th><th>处理状态</th></tr>
           </thead>
           <tbody>
-            <tr><td><a class="link" data-action="open-doc" data-doc="PK-20260515-0041">PK-20260515-0041</a></td><td>4C20-A0326</td><td>1</td><td>2026-05-15 10:12</td><td>拣货缺货临时锁定</td><td><span class="tag tag--warning">待释放</span></td></tr>
+            <tr><td colspan="6" class="empty-cell">暂无计入锁定库存的单据；拣货缺货仍在占用库存中查看。</td></tr>
           </tbody>
         </table>
       `,
       rule: `
-        <div class="formula-box">锁定库存主要用于拣货缺货场景，仓库侧临时锁住指定库位库存，等待补拣、复核或释放。</div>
+        <div class="formula-box">当前锁定库存暂不计算拣货缺货。拣货缺货产生的临时异常仍归入占用库存，避免和单据占用重复计算。</div>
         <table class="inner-table">
           <thead><tr><th>字段</th><th>说明</th></tr></thead>
           <tbody>
-            <tr><td>拣货单号</td><td>触发锁定的拣货任务单号。</td></tr>
-            <tr><td>库位编码</td><td>被临时锁定库存所在库位。</td></tr>
-            <tr><td>锁定时间</td><td>仓库执行缺货锁定的时间。</td></tr>
+            <tr><td>锁定库存</td><td>后续仅用于独立冻结、盘点冻结等非拣货缺货场景。</td></tr>
+            <tr><td>拣货缺货</td><td>仍在占用库存明细中展示，不进入锁定库存字段。</td></tr>
+            <tr><td>展示规则</td><td>没有非缺货锁定单据时，锁定显示为 0。</td></tr>
           </tbody>
         </table>
       `,
@@ -144,7 +144,7 @@ const drawerData = {
         <table class="inner-table">
           <thead><tr><th>货位编码</th><th>总库存</th><th>可用库存</th><th>占用库存</th><th>锁定</th><th>是否计入良品储位库存</th><th>最后变动时间</th></tr></thead>
           <tbody>
-            <tr><td>4C20-A0326</td><td>11</td><td>11</td><td><a class="link occupied-value" data-action="open-occupied" data-sku="${sku}">3</a></td><td><a class="link lock-value" data-action="open-locked" data-sku="${sku}">1</a></td><td><span class="tag tag--success">是</span></td><td>2026-05-15 09:32</td></tr>
+            <tr><td>4C20-A0326</td><td>11</td><td>11</td><td><a class="link occupied-value" data-action="open-occupied" data-sku="${sku}">3</a></td><td><a class="link lock-value" data-action="open-locked" data-sku="${sku}">0</a></td><td><span class="tag tag--success">是</span></td><td>2026-05-15 09:32</td></tr>
             <tr><td>4D20-A0111 <span class="defect-badge">次</span></td><td>2</td><td>2</td><td><a class="link occupied-value" data-action="open-occupied" data-sku="${sku}">0</a></td><td><a class="link lock-value" data-action="open-locked" data-sku="${sku}">0</a></td><td><span class="tag tag--warning">否</span></td><td>2026-05-15 09:18</td></tr>
           </tbody>
         </table>
@@ -175,7 +175,7 @@ const drawerData = {
         <table class="inner-table">
           <thead><tr><th>货位编码</th><th>总库存</th><th>可用库存</th><th>占用库存</th><th>锁定</th><th>是否计入良品储位库存</th><th>最后变动时间</th></tr></thead>
           <tbody>
-            <tr><td>4C20-A0326</td><td>11</td><td>11</td><td><a class="link occupied-value" data-action="open-occupied" data-sku="${sku}">3</a></td><td><a class="link lock-value" data-action="open-locked" data-sku="${sku}">1</a></td><td><span class="tag tag--success">是</span></td><td>2026-05-15 09:32</td></tr>
+            <tr><td>4C20-A0326</td><td>11</td><td>11</td><td><a class="link occupied-value" data-action="open-occupied" data-sku="${sku}">3</a></td><td><a class="link lock-value" data-action="open-locked" data-sku="${sku}">0</a></td><td><span class="tag tag--success">是</span></td><td>2026-05-15 09:32</td></tr>
           </tbody>
         </table>
       `,
@@ -290,7 +290,7 @@ const drawerData = {
         <table class="inner-table">
           <thead><tr><th>仓库</th><th>总库存</th><th>在途</th><th>储位库存</th><th>占用库存</th><th>待上架库存</th><th>锁定</th><th>次品库存</th></tr></thead>
           <tbody>
-            <tr><td>SZ01 东莞仓</td><td>13</td><td>0</td><td>11</td><td>3</td><td>2</td><td>1</td><td>2</td></tr>
+            <tr><td>SZ01 东莞仓</td><td>13</td><td>0</td><td>11</td><td>3</td><td>2</td><td>0</td><td>2</td></tr>
           </tbody>
         </table>
       `,
@@ -319,7 +319,7 @@ const drawerData = {
             <tr><td>储位库存</td><td>良品货位上可用于履约的库存，不展示次品货位库存。</td></tr>
             <tr><td>占用库存</td><td>包含单据流转到仓库预占用、仓库生成拣货任务还没拣货的，以及仓库拣货下来还没出库的库存数量。</td></tr>
             <tr><td>待上架库存</td><td>待上架库存 = 入库待上架 + 拣货后还货待上架，即已拣货但需还回货位的数据和正常入库后待上架的数据。</td></tr>
-            <tr><td>锁定</td><td>拣货缺货场景下临时锁定的库存，可查看拣货单号、库位编码、锁定时间。</td></tr>
+            <tr><td>锁定</td><td>暂不计算拣货缺货；拣货缺货仍归入占用库存，后续仅用于独立冻结等非缺货锁定场景。</td></tr>
             <tr><td>次品库存</td><td>仓库次品数量。</td></tr>
           </tbody>
         </table>
