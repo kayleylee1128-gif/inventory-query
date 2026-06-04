@@ -126,18 +126,19 @@
                   <th rowspan="2">销售状态</th>
                   <th class="num-cell" rowspan="2">总库存 <button class="help-dot" data-role="field-tip" data-tip="总库存 = 在库库存 + 在途库存">?</button></th>
                   <th class="num-cell" rowspan="2">在途</th>
-                  <th class="num-cell" rowspan="2">可用库存 <button class="help-dot" data-role="field-tip" data-tip="良品货位上可用于履约的库存，不包含次品货位库存">?</button></th>
+                  <th class="num-cell" rowspan="2">储位库存 <button class="help-dot" data-role="field-tip" data-tip="良品货位上可用于履约的库存，不包含次品货位库存">?</button></th>
                   <th class="num-cell" rowspan="2">占用库存</th>
                   <th class="num-cell" rowspan="2">待上架库存</th>
                   <th class="num-cell" rowspan="2">锁定</th>
                   <th class="num-cell" rowspan="2">次品库存</th>
-                  <th class="group-head" colspan="4">库存明细</th>
+                  <th class="group-head" colspan="5">库存明细</th>
                 </tr>
                 <tr>
                   <th>库位编码</th>
                   <th class="num-cell">总库存</th>
                   <th class="num-cell">可用库存</th>
                   <th class="num-cell">占用库存</th>
+                  <th class="num-cell">锁定</th>
                 </tr>
               </thead>
               <tbody>
@@ -188,6 +189,12 @@
                     <div class="location-detail-list">
                       <div class="location-detail-row"><a class="link occupied-value" data-action="open-occupied" data-sku="FAFC0062-001">3</a></div>
                       <div class="location-detail-row"><a class="link occupied-value" data-action="open-occupied" data-sku="FAFC0062-001">0</a></div>
+                    </div>
+                  </td>
+                  <td class="num-cell">
+                    <div class="location-detail-list">
+                      <div class="location-detail-row"><a class="link lock-value" data-action="open-locked" data-sku="FAFC0062-001">1</a></div>
+                      <div class="location-detail-row"><a class="link lock-value" data-action="open-locked" data-sku="FAFC0062-001">0</a></div>
                     </div>
                   </td>
                 </tr>
